@@ -1,0 +1,91 @@
+import Image from "next/image";
+import Container from "@/components/layout/Container";
+import Button from "@/components/ui/Button";
+import MotionWrapper from "@/components/animations/MotionWrapper";
+import FadeIn from "@/components/animations/FadeIn";
+import SocialLinks from "@/components/ui/SocialLinks";
+import { profile } from "@/data/profile";
+
+const HeroSection = () => {
+  return (
+    <section id="hero" className="py-24 sm:py-28">
+      <Container as="main">
+        <div className="grid items-start gap-12 md:grid-cols-2">
+          <div>
+            <MotionWrapper>
+              <FadeIn delay={0.05}>
+                <h1 className="mt-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+                  Hi, I’m{" "}
+                  <span className="text-blue-600 dark:text-blue-400">
+                    {profile.name}
+                  </span>
+                </h1>
+              </FadeIn>
+
+              <FadeIn delay={0.1}>
+                <p className="mt-4 text-xl font-semibold text-gray-700 dark:text-gray-300">
+                  {profile.role}
+                </p>
+                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                  {profile.location}
+                </p>
+              </FadeIn>
+
+              <FadeIn delay={0.15}>
+                <p className="mt-6 max-w-2xl text-gray-600 dark:text-gray-400">
+                  {profile.summary}
+                </p>
+              </FadeIn>
+
+              <FadeIn delay={0.2}>
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <Button as="a" href="#projects">
+                    View Projects
+                  </Button>
+
+                  <Button
+                    as="a"
+                    href="/resume/Rahul_Singh_Resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Resume.pdf
+                  </Button>
+
+                  <Button
+                    as="a"
+                    href="#contact"
+                    variant="outline"
+                  >
+                    Contact Me
+                  </Button>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={0.25}>
+                <div className="mt-8">
+                  <SocialLinks />
+                </div>
+              </FadeIn>
+            </MotionWrapper>
+          </div>
+
+          <div className="relative hidden md:flex justify-end">
+            <FadeIn delay={0.15}>
+              <Image
+                src="/assets/images/rahul.png"
+                alt="Rahul Singh"
+                width={360}
+                height={360}
+                priority
+                className="rounded-2xl object-cover shadow-lg"
+              />
+            </FadeIn>
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default HeroSection;
