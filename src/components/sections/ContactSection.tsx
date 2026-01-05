@@ -79,7 +79,7 @@ const ContactSection = () => {
       const res = await fetch("/api/otp/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile: form.mobile }),
+        body: JSON.stringify({ email: form.email, name: form.name }),
       });
 
       const data = await res.json();
@@ -90,6 +90,7 @@ const ContactSection = () => {
       }
 
       setOtpSent(true);
+      setSuccess("OTP sent to your email. Please check your inbox.");
     } catch {
       setError("Network error. Please try again.");
     } finally {
@@ -110,7 +111,7 @@ const ContactSection = () => {
       const res = await fetch("/api/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp: form.otp }),
+        body: JSON.stringify({ email: form.email, otp: form.otp }),
       });
 
       const data = await res.json();
@@ -121,6 +122,7 @@ const ContactSection = () => {
       }
 
       setOtpVerified(true);
+      setSuccess("OTP verified successfully!");
     } catch {
       setError("Network error.");
     } finally {
