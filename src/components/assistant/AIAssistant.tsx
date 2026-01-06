@@ -20,8 +20,8 @@ const AIRobotRecorder = () => {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="fixed right-6 z-50 hidden md:block"
-      style={{ bottom: "10%" }}
+      className="fixed z-50 right-4 sm:right-6"
+      style={{ bottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
     >
       <motion.div
         animate={{ y: [0, -6, 0] }}
@@ -100,10 +100,10 @@ const AIRobotRecorder = () => {
             <Image
               src="/assets/images/ai-robot.png"
               alt="AI Assistant"
-              width={160}
-              height={160}
+              width={120}
+              height={120}
               priority
-              className="drop-shadow-2xl"
+              className="drop-shadow-2xl w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36"
             />
           </motion.div>
         </div>
