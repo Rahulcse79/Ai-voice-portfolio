@@ -50,6 +50,9 @@ function getTransporter(): Transporter {
     port: cfg.port,
     secure: cfg.secure,
     auth: cfg.auth,
+    tls: {
+      rejectUnauthorized: false,
+    },
   });
 
   return cachedTransporter;

@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { otpStore } from "@/lib/otpStore";
 
-// Verify OTP endpoint
 export async function POST(req: NextRequest) {
   try {
-    const { email, otp } = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { message: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+
+    const { email, otp } = body;
 
     if (!email || !otp) {
       return NextResponse.json(
@@ -18,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     if (!/^\d{6}$/.test(otpStr)) {
       return NextResponse.json(
-        { message: "OTP must be 6 digits" },
+        { message: "OTP must be a 6-digit number" },
         { status: 400 }
       );
     }
@@ -32,7 +41,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (Date.now() >= stored.expiresAt) {
+    if (Date.now() > stored.expiresAt) {
       otpStore.delete(emailKey);
       return NextResponse.json(
         { message: "OTP has expired. Please request a new one." },
@@ -42,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     if (stored.otp !== otpStr) {
       return NextResponse.json(
-        { message: "Invalid OTP. Please check and try again." },
+        { message: "Invalid OTP. Please try again." },
         { status: 400 }
       );
     }
@@ -54,9 +63,9 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error verifying OTP:", error);
+    console.error("OTP VERIFY ERROR:", error);
     return NextResponse.json(
-      { message: "Failed to verify OTP" },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
