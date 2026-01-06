@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "@/lib/mail";
 import { buildVerifyEmailTemplate } from "@/lib/templates/authTemplate";
 import { otpStore } from "@/lib/otpStore";
+export const runtime = "nodejs";
 
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -76,7 +77,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("OTP SEND ERROR:", error);
     return NextResponse.json(
-      { message: "Failed to send OTP" },
+      {
+        message: "Failed to send OTP",
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }

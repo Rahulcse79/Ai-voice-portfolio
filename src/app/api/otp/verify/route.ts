@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { otpStore } from "@/lib/otpStore";
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   try {
