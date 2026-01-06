@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "@/lib/mail";
-import { buildContactEmailTemplate } from "@/lib/templates/queryTemplate";
+import { buildVerifyEmailTemplate } from "@/lib/templates/authTemplate";
 import { otpStore } from "@/lib/otpStore";
 
 function generateOTP(): string {
@@ -36,10 +36,31 @@ export async function POST(req: NextRequest) {
       expiresAt: Date.now() + 5 * 60 * 1000,
     });
 
-    const emailTemplate = buildContactEmailTemplate({
+    const emailTemplate = buildVerifyEmailTemplate({
       name: name || "User",
       otp,
     });
+
+    const requiredSmtpVars = [
+      "SMTP_HOST",
+      "SMTP_PORT",
+      "SMTP_USER",
+      "SMTP_PASS",
+    ] as const;
+    const missing = requiredSmtpVars.filter((k) => !process.env[k]);
+    if (missing.length > 0) {
+      console.error(
+        "OTP SEND ERROR: Missing SMTP env vars:",
+        missing.join(", ")
+      );
+      return NextResponse.json(
+        {
+          message: "Server email is not configured",
+          missing,
+        },
+        { status: 500 }
+      );
+    }
 
     await sendMail({
       to: emailKey,
@@ -56,6 +77,32 @@ export async function POST(req: NextRequest) {
     console.error("OTP SEND ERROR:", error);
     return NextResponse.json(
       { message: "Failed to send OTP" },
+      { status: 500 }
+    );
+  }
+}
+
+// app.get('/api/view', async (req, res) => {
+//   try {
+//     return res.status(200).json({ message: "view successful", status: 1 });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Internal server error', error: error.message, status: -1 });
+//   }
+// });
+// /api/view
+export async function GET(req: NextRequest) {
+  try {
+    return NextResponse.json(
+      { message: "view successful", status: 1 },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Internal server error",
+        error: (error as Error).message,
+        status: -1,
+      },
       { status: 500 }
     );
   }
