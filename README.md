@@ -9,8 +9,7 @@ Add your own screenshots here (recommended: place images under `public/assets/im
 
 > Replace the file paths with your actual images.
 
-![Homepage](public/assets/images/your-homepage-screenshot.png)
-![AI Assistant](public/assets/images/your-assistant-screenshot.png)
+![Homepage](public/assets/images/HomePage.png)
 
 It includes a classic portfolio layout (hero, projects, experience, skills, education, achievements, contact) plus API routes for:
 
