@@ -52,11 +52,7 @@ const HeroSection = () => {
                     Resume.pdf
                   </Button>
 
-                  <Button
-                    as="a"
-                    href="#contact"
-                    variant="outline"
-                  >
+                  <Button as="a" href="#contact" variant="outline">
                     Contact Me
                   </Button>
                 </div>
