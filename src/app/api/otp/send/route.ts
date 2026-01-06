@@ -3,15 +3,23 @@ import { sendMail } from "@/lib/mail";
 import { buildContactEmailTemplate } from "@/lib/templates/queryTemplate";
 import { otpStore } from "@/lib/otpStore";
 
-// Generate random 6-digit OTP
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Send OTP endpoint
 export async function POST(req: NextRequest) {
   try {
-    const { email, name } = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { message: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+
+    const { email, name } = body;
 
     if (!email || !/^\S+@\S+\.\S+$/.test(String(email).trim())) {
       return NextResponse.json(
@@ -21,10 +29,12 @@ export async function POST(req: NextRequest) {
     }
 
     const emailKey = String(email).trim().toLowerCase();
-
     const otp = generateOTP();
-    const expiresAt = Date.now() + 5 * 60 * 1000;
-    otpStore.set(emailKey, { otp, expiresAt });
+
+    otpStore.set(emailKey, {
+      otp,
+      expiresAt: Date.now() + 5 * 60 * 1000,
+    });
 
     const emailTemplate = buildContactEmailTemplate({
       name: name || "User",
@@ -38,21 +48,14 @@ export async function POST(req: NextRequest) {
       html: emailTemplate.html,
     });
 
-    setTimeout(() => {
-      const stored = otpStore.get(emailKey);
-      if (stored && Date.now() >= stored.expiresAt) {
-        otpStore.delete(emailKey);
-      }
-    }, 5 * 60 * 1000);
-
     return NextResponse.json(
       { message: "OTP sent successfully to your email" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error sending OTP:", error);
+    console.error("OTP SEND ERROR:", error);
     return NextResponse.json(
-      { message: "Failed to send OTP. Please try again." },
+      { message: "Failed to send OTP" },
       { status: 500 }
     );
   }

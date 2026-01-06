@@ -3,7 +3,15 @@ import { sendMail } from "@/lib/mail";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { success: false, message: "Invalid request body." },
+        { status: 400 }
+      );
+    }
 
     const { name, email, mobile, subject, message } = body;
 
@@ -14,43 +22,42 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
+    if (!/^\S+@\S+\.\S+$/.test(String(email))) {
       return NextResponse.json(
-        { success: false, message: "Invalid email." },
+        { success: false, message: "Invalid email address." },
         { status: 400 }
       );
     }
 
-    if (!/^\d{10}$/.test(mobile)) {
+    if (!/^\d{10}$/.test(String(mobile))) {
       return NextResponse.json(
         { success: false, message: "Invalid mobile number." },
         { status: 400 }
       );
     }
 
-    const adminTo = process.env.CONTACT_TO ?? process.env.SMTP_FROM;
+    const adminTo = process.env.CONTACT_TO || process.env.SMTP_FROM;
 
     if (!adminTo) {
       return NextResponse.json(
         {
           success: false,
-          message:
-            "Server is not configured to receive contact emails (CONTACT_TO/SMTP_FROM missing).",
+          message: "Server email configuration missing.",
         },
         { status: 500 }
       );
     }
 
     const safe = (v: string) =>
-      String(v ?? "")
+      String(v)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;");
+        .replace(/"/g, "&quot;");
 
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>New Contact Message</h2>
+        <h2>New Portfolio Contact</h2>
         <p><strong>Name:</strong> ${safe(name)}</p>
         <p><strong>Email:</strong> ${safe(email)}</p>
         <p><strong>Mobile:</strong> ${safe(mobile)}</p>
@@ -62,23 +69,34 @@ export async function POST(req: Request) {
       </div>
     `;
 
-    const text = `New Contact Message\n\nName: ${name}\nEmail: ${email}\nMobile: ${mobile}\nSubject: ${subject}\n\nMessage:\n${message}\n`;
+    const text = `
+New Portfolio Contact
+
+Name: ${name}
+Email: ${email}
+Mobile: ${mobile}
+Subject: ${subject}
+
+Message:
+${message}
+    `.trim();
 
     await sendMail({
       to: adminTo,
+      cc: email,
       subject: `Portfolio Contact: ${subject}`,
       text,
       html,
-      cc: email,
     });
 
     return NextResponse.json({
       success: true,
-      message: "Message submitted successfully.",
+      message: "Message sent successfully.",
     });
-  } catch {
+  } catch (err) {
+    console.error("CONTACT API ERROR:", err);
     return NextResponse.json(
-      { success: false, message: "Server error." },
+      { success: false, message: "Internal server error." },
       { status: 500 }
     );
   }
