@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export async function runGuardrailClassifier(
   message: string,
-  companyName: string = "Coral telecom"
+  companyName: string = "Resume Ai assistant"
 ): Promise<GuardrailOutput> {
   const messages = [
     {

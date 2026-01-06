@@ -4,7 +4,7 @@ import type { RealtimeSession, RealtimeAgent } from "@openai/agents/realtime";
 import { applyCodecPreferences } from "../lib/codecUtils";
 import { useEvent } from "../contexts/EventContext";
 import { useHandleSessionHistory } from "./useHandleSessionHistory";
-import { SessionStatus } from "../types";
+import { SessionStatus } from "../app/types";
 
 export interface RealtimeSessionCallbacks {
   onConnectionChange?: (status: SessionStatus) => void;

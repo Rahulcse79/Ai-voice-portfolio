@@ -1,8 +1,8 @@
-import { CoralAiAgent } from "./CoralAiAgent";
-import type { RealtimeAgent } from "@openai/agents/realtime";
+import { ResumeAiAgent } from "./ResumeAiAgent";
+import { RealtimeAgent } from "@openai/agents/realtime";
 
 export const allAgentSets: Record<string, RealtimeAgent[]> = {
-  CoralAiScenario: CoralAiAgent,
+  ResumeAiScenario: ResumeAiAgent,
 };
 
-export const defaultAgentSetKey = "CoralAiScenario";
+export const defaultAgentSetKey = "ResumeAiScenario";

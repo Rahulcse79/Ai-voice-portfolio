@@ -14,17 +14,19 @@ import {
   allAgentSets,
   defaultAgentSetKey,
 } from "@/app/api/aiAssistance/agentConfigs";
-import { CoralAiAgent } from "@/app/api/aiAssistance/agentConfigs/CoralAiAgent";
-import { CoralAiAgentCompanyName } from "@/app/api/aiAssistance/agentConfigs/CoralAiAgent";
+import {
+  ResumeAiAgent,
+  ResumeAiAgentCompanyName,
+} from "@/app/api/aiAssistance/agentConfigs/ResumeAiAgent";
 import { useHandleSessionHistory } from "@/hooks/useHandleSessionHistory";
 import AIAssistant from "@/components/assistant/AIAssistant";
 
 const sdkScenarioMap: Record<string, RealtimeAgent[]> = {
-  CoralAiScenario: CoralAiAgent,
+  ResumeAiScenario: ResumeAiAgent,
 };
 
 function getCompanyName(agentSetKey: string) {
-  return CoralAiAgentCompanyName;
+  return ResumeAiAgentCompanyName;
 }
 
 function App() {

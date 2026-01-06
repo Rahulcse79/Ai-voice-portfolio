@@ -1,6 +1,11 @@
 import { RealtimeItem, tool } from "@openai/agents/realtime";
-import employeeData from "../../hardCodeData/coralTicketing/employeeData.json";
-import topicData from "../../hardCodeData/coralTicketing/TopicData.json";
+import achievements from "@/data/achievements";
+import education from "@/data/education";
+import experience from "@/data/experience";
+import skills from "@/data/skills";
+import projects from "@/data/projects";
+import { Profile } from "@/data/profile";
+import { skills } from "@/data/skills";
 
 export const supervisorAgentInstructions = `You are an expert customer service supervisor agent, tasked with providing real-time guidance to a more junior agent that's chatting directly with the customer. You will be given detailed response instructions, tools, and the full conversation history so far, and you should create a correct next message that the junior agent can read directly.
 
@@ -235,12 +240,6 @@ export const supervisorAgentTools = [
   },
 ];
 
-function generateTicketRef() {
-  const ts = Date.now().toString(36).toUpperCase();
-  const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return `CT-TKT-${ts}-${rand}`;
-}
-
 async function fetchResponsesMessage(body: any) {
   const response = await fetch("/api/aiAssistance/responses", {
     method: "POST",
@@ -258,199 +257,6 @@ async function fetchResponsesMessage(body: any) {
 
   const completion = await response.json();
   return completion;
-}
-
-async function translateToEnglish(text: unknown): Promise<string> {
-  const input = String(text ?? "").trim();
-  if (!input) return "";
-
-  // Keep prompt short and deterministic—only translate when needed; otherwise return the same.
-  const res = await fetchResponsesMessage({
-    model: "gpt-4.1-mini",
-    input: [
-      {
-        type: "message",
-        role: "system",
-        content:
-          "You translate user-provided text to English for internal ticketing. " +
-          "Return ONLY the translated English text, with no quotes, no extra commentary. " +
-          "If the input is already English, return it unchanged.",
-      },
-      {
-        type: "message",
-        role: "user",
-        content: input,
-      },
-    ],
-  });
-
-  const outputItems: any[] = res?.output ?? [];
-  const assistantMessages = outputItems.filter((item) => item.type === "message");
-  const finalText = assistantMessages
-    .map((msg: any) => {
-      const contentArr = msg.content ?? [];
-      return contentArr
-        .filter((c: any) => c.type === "output_text")
-        .map((c: any) => c.text)
-        .join("");
-    })
-    .join("\n")
-    .trim();
-
-  return finalText || input;
-}
-
-async function createTaskTicket(args: any, ticket: any) {
-  try {
-    const taskPayload = {
-      tasksName: `${ticket.requester.name} Department : ${args.recipientTeam} - ${args.subject}`,
-      taskDescription: `Created Ticket Ref: ${ticket.ticketRef}`,
-      taskType: "General",
-      taskPriority: "Normal",
-      currentStats: "New",
-    };
-    const token = "Opaque 00aa5095-4fa4-4816-8381-5792d1dbe24f";
-    const response = await fetch("http://localhost:8996/app/v2/task/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify(taskPayload),
-    });
-
-    if (!response.ok) {
-      console.error("[TASK] Failed to create task:", response.status);
-      return null;
-    }
-
-    const result = await response.json();
-    console.log("[TASK] Task created successfully:", result);
-    return result;
-  } catch (err) {
-    console.error("[TASK] Failed to create task:", err);
-    return null;
-  }
-}
-
-async function sendTicketMail(args: any, ticket: any) {
-  const baseCc = Array.isArray(topicData?.ccMembersEmails)
-    ? topicData.ccMembersEmails
-    : [];
-
-  const recipientTeam: string =
-    typeof args?.recipientTeam === "string" ? args.recipientTeam : "";
-  const departmentHeadEmail = getDepartmentHeadEmail(recipientTeam);
-
-  const userSendTo = Array.isArray(args?.sendTo) ? args.sendTo : [];
-  const toList = Array.from(new Set(userSendTo)).filter(Boolean);
-  const ccList = Array.from(new Set([...baseCc, departmentHeadEmail])).filter(
-    Boolean
-  );
-
-  const finalTo = (toList.length > 0 ? toList : ccList).filter(Boolean);
-  const finalCc = toList.length > 0 ? ccList : [];
-
-  if (finalTo.length === 0) return;
-  const issueTitleEn = await translateToEnglish(args?.subject);
-  const issueDetailsEn = await translateToEnglish(args?.description);
-
-  try {
-    await fetch("/api/mailGateway", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        to: finalTo,
-        cc: finalCc,
-        username: ticket.requester.name,
-        department: ticket.requester.department,
-        ticketNo: ticket.ticketRef,
-        issueTitle: issueTitleEn,
-        issueDetails: issueDetailsEn,
-      }),
-    });
-
-    console.log(
-      "[MAIL] Ticket email sent:",
-      `to=${finalTo.join(", ")}`,
-      finalCc.length ? `cc=${finalCc.join(", ")}` : ""
-    );
-  } catch (err) {
-    console.error("[MAIL] Failed to send send to mail:", err);
-  }
-}
-
-function inferRecipientTeamFromTopicData(text: string): string | null {
-  const departments = (topicData as any)?.departments;
-  if (!Array.isArray(departments) || departments.length === 0) return null;
-
-  const haystack = (text || "").toLowerCase();
-  for (const d of departments) {
-    const name = String(d?.name ?? "").trim();
-    if (!name) continue;
-    if (haystack.includes(name.toLowerCase())) return name;
-  }
-  return null;
-}
-
-function normalizeDepartmentName(name: string): string {
-  return String(name || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
-
-function getDepartmentHeadEmail(recipientTeam: string): string {
-  const departments = (topicData as any)?.departments;
-  if (!Array.isArray(departments) || departments.length === 0) return "";
-
-  const wanted = normalizeDepartmentName(recipientTeam);
-  if (!wanted) return "";
-
-  const exact = departments.find(
-    (d: any) => normalizeDepartmentName(d?.name) === wanted
-  );
-  return String(exact?.headEmail ?? "").trim();
-}
-
-function resolveRecipientTeamFromText(text: string): string {
-  const inferred = inferRecipientTeamFromTopicData(text);
-  return inferred || "All support";
-}
-
-function getToolResponse(fName: string, args: any) {
-  switch (fName) {
-    case "getEmployeeProfile":
-      return employeeData;
-    case "createEmployeeTicket": {
-      // Ensure recipientTeam is ALWAYS set (fallback to "All support").
-      args.recipientTeam = resolveRecipientTeamFromText(
-        `${args?.recipientTeam ?? ""} ${args?.subject ?? ""} ${
-          args?.description ?? ""
-        }`
-      );
-
-      const ticket = {
-        ticketRef: generateTicketRef(),
-        status: "CREATED",
-        createdAt: new Date().toISOString(),
-        requester: {
-          employeeNumber: employeeData.employeeNumber,
-          name: employeeData.name,
-          department: employeeData.department,
-          team: employeeData.team,
-        },
-      };
-      // Create task and send mail asynchronously
-      createTaskTicket(args, ticket);
-      sendTicketMail(args, ticket);
-      return ticket;
-    }
-    default:
-      return { result: true };
-  }
 }
 
 async function handleToolCalls(
@@ -490,7 +296,6 @@ async function handleToolCalls(
     for (const toolCall of functionCalls) {
       const fName = toolCall.name;
       const args = JSON.parse(toolCall.arguments || "{}");
-      const toolRes = getToolResponse(fName, args);
       if (addBreadcrumb) {
         addBreadcrumb(`[supervisorAgent] function call: ${fName}`, args);
       }
@@ -516,10 +321,9 @@ async function handleToolCalls(
     }
     currentResponse = await fetchResponsesMessage(body);
   }
-}
 
-export const getNextResponseFromCoralAiAgent = tool({
-  name: "getNextResponseFromCoralAiAgent",
+export const getNextResponseFromResumeAiAgent = tool({
+  name: "getNextResponseFromResumeAiAgent",
   description:
     "Determines the next response whenever the agent faces a non-trivial decision, produced by a highly intelligent supervisor agent. Returns a message describing what to do next.",
   parameters: {
