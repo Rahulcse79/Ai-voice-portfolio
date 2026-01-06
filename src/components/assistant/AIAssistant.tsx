@@ -21,8 +21,8 @@ const AIRobotRecorder = ({
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="fixed z-50 right-4 sm:right-6"
-      style={{ bottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
+      className="fixed z-50 right-3 sm:right-6"
+      style={{ bottom: "max(10vh, env(safe-area-inset-bottom))" }}
     >
       <motion.div
         animate={{ y: [0, -6, 0] }}
@@ -109,14 +109,14 @@ const AIRobotRecorder = ({
               width={120}
               height={120}
               priority
-              className="drop-shadow-2xl w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36"
+              className="drop-shadow-2xl w-14 h-14 sm:w-28 sm:h-28 md:w-36 md:h-36"
             />
           </motion.div>
         </div>
 
-        {/* Voice Wave Animation (shows when recording) */}
+        {/* Voice Wave Animation (shows when connected / connecting) */}
         <AnimatePresence>
-          {isConnecting && (
+          {(isConnected || isConnecting) && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -124,31 +124,31 @@ const AIRobotRecorder = ({
               transition={{ duration: 0.3 }}
               className="w-full flex flex-col items-center absolute left-1 -translate-x-1/2 top-[calc(100%+8px)]"
             >
-              {/* "Listening..." Text */}
+              {/* Status Text */}
               <motion.p
                 animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
                 className="text-xs text-center mb-2 text-green-500 dark:text-green-400 font-medium tracking-wide"
               >
-                Connecting...
+                {isConnecting ? "Connecting..." : "Listening..."}
               </motion.p>
 
               {/* Wave Container with Glass Effect */}
-              <div className="flex items-end justify-center gap-[3px] px-4 py-2 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-lg">
+              <div className="flex items-end justify-center gap-[3px] px-3 sm:px-4 py-2 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-lg">
                 {[...Array(9)].map((_, i) => (
                   <motion.div
                     key={i}
                     animate={{
-                      height: [6, 24, 6],
+                      height: isConnecting ? [6, 18, 6] : [6, 24, 6],
                       opacity: [0.7, 1, 0.7],
                     }}
                     transition={{
-                      duration: 0.8,
+                      duration: isConnecting ? 0.95 : 0.8,
                       repeat: Infinity,
                       ease: "easeInOut",
                       delay: i * 0.1,
                     }}
-                    className="w-[3px] rounded-full bg-gradient-to-t from-green-500 to-green-300 shadow-sm shadow-green-500/50"
+                    className="w-[2px] sm:w-[3px] rounded-full bg-gradient-to-t from-green-500 to-green-300 shadow-sm shadow-green-500/50"
                     style={{ minHeight: 6 }}
                   />
                 ))}
