@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "@/lib/mail";
-import { buildContactEmailTemplate } from "@/lib/templates/queryTemplate";
+import { buildVerifyEmailTemplate } from "@/lib/templates/authTemplate";
 import { otpStore } from "@/lib/otpStore";
 
 function generateOTP(): string {
@@ -36,10 +36,31 @@ export async function POST(req: NextRequest) {
       expiresAt: Date.now() + 5 * 60 * 1000,
     });
 
-    const emailTemplate = buildContactEmailTemplate({
+    const emailTemplate = buildVerifyEmailTemplate({
       name: name || "User",
       otp,
     });
+
+    const requiredSmtpVars = [
+      "SMTP_HOST",
+      "SMTP_PORT",
+      "SMTP_USER",
+      "SMTP_PASS",
+    ] as const;
+    const missing = requiredSmtpVars.filter((k) => !process.env[k]);
+    if (missing.length > 0) {
+      console.error(
+        "OTP SEND ERROR: Missing SMTP env vars:",
+        missing.join(", ")
+      );
+      return NextResponse.json(
+        {
+          message: "Server email is not configured",
+          missing,
+        },
+        { status: 500 }
+      );
+    }
 
     await sendMail({
       to: emailKey,
