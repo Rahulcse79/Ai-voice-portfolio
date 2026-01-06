@@ -16,7 +16,7 @@ import {
 } from "@/app/api/aiAssistance/agentConfigs";
 import {
   ResumeAiAgent,
-  ResumeAiAgentCompanyName,
+  ResumeAiAgentOwnerName,
 } from "@/app/api/aiAssistance/agentConfigs/ResumeAiAgent";
 import { useHandleSessionHistory } from "@/hooks/useHandleSessionHistory";
 import AIAssistant from "@/components/assistant/AIAssistant";
@@ -26,7 +26,7 @@ const sdkScenarioMap: Record<string, RealtimeAgent[]> = {
 };
 
 function getCompanyName(agentSetKey: string) {
-  return ResumeAiAgentCompanyName;
+  return ResumeAiAgentOwnerName;
 }
 
 function App() {
