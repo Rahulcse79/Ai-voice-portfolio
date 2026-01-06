@@ -24,7 +24,7 @@ export const profile: Profile = {
   phone: "+91-9752079591",
   summary:
     "Software Engineer with nearly 2 years of hands-on experience in designing and developing scalable, high-performance web applications. Experienced in building reliable systems using modern web technologies and agile practices. Strong at translating business requirements into efficient technical solutions, with expertise in Go, TypeScript, Java, and JavaScript.",
-  resumeUrl: "/resume/Rahul_Singh_Resume.pdf",
+  resumeUrl: "/resume/Rahul_singh_resume.pdf",
   socialLinks: [
     {
       label: "LinkedIn",

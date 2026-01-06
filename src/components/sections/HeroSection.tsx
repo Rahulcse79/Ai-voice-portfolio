@@ -45,7 +45,7 @@ const HeroSection = () => {
 
                   <Button
                     as="a"
-                    href="/resume/Rahul_Singh_Resume.pdf"
+                    href="/resume/Rahul_singh_resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
