@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import BottomToolbar from "../components/assistant/BottomToolbar";
 import { SessionStatus } from "@/app/types";
 import type { RealtimeAgent } from "@openai/agents/realtime";
 import { useTranscript } from "@/contexts/TranscriptContext";
@@ -18,6 +17,7 @@ import {
 import { CoralAiAgent } from "@/app/api/aiAssistance/agentConfigs/CoralAiAgent";
 import { CoralAiAgentCompanyName } from "@/app/api/aiAssistance/agentConfigs/CoralAiAgent";
 import { useHandleSessionHistory } from "@/hooks/useHandleSessionHistory";
+import AIAssistant from "@/components/assistant/AIAssistant";
 
 const sdkScenarioMap: Record<string, RealtimeAgent[]> = {
   CoralAiScenario: CoralAiAgent,
@@ -52,14 +52,13 @@ function App() {
     }
   }, [sdkAudioElement]);
 
-  const { connect, disconnect, sendEvent, mute } =
-    useRealtimeSession({
-      onConnectionChange: (s) => setSessionStatus(s as SessionStatus),
-      onAgentHandoff: (agentName: string) => {
-        handoffTriggeredRef.current = true;
-        setSelectedAgentName(agentName);
-      },
-    });
+  const { connect, disconnect, sendEvent, mute } = useRealtimeSession({
+    onConnectionChange: (s) => setSessionStatus(s as SessionStatus),
+    onAgentHandoff: (agentName: string) => {
+      handoffTriggeredRef.current = true;
+      setSelectedAgentName(agentName);
+    },
+  });
 
   const [sessionStatus, setSessionStatus] =
     useState<SessionStatus>("DISCONNECTED");
@@ -70,15 +69,6 @@ function App() {
       return stored ? stored === "true" : true;
     }
   );
-
-  const sendClientEvent = (eventObj: any, eventNameSuffix = "") => {
-    try {
-      sendEvent(eventObj);
-      logClientEvent(eventObj, eventNameSuffix);
-    } catch (err) {
-      console.error("Failed to send via SDK", err);
-    }
-  };
 
   useHandleSessionHistory();
 
@@ -98,12 +88,6 @@ function App() {
     setSelectedAgentName(agentKeyToUse);
     setSelectedAgentConfigSet(agents);
   }, [searchParams]);
-
-  useEffect(() => {
-    if (selectedAgentName && sessionStatus === "DISCONNECTED") {
-      connectToRealtime();
-    }
-  }, [selectedAgentName]);
 
   useEffect(() => {
     if (
@@ -244,8 +228,8 @@ function App() {
   }, [sessionStatus, isAudioPlaybackEnabled]);
 
   return (
-    <div className="text-base flex flex-col h-screen text-white relative">
-      <BottomToolbar
+    <div>
+      <AIAssistant
         sessionStatus={sessionStatus}
         onToggleConnection={onToggleConnection}
       />
