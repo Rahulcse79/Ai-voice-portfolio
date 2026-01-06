@@ -5,6 +5,10 @@ interface AchievementCardProps {
 }
 
 const AchievementCard = ({ achievement }: AchievementCardProps) => {
+  const metaParts = [achievement.type, achievement.year ? String(achievement.year) : null]
+    .filter(Boolean)
+    .join(" • ");
+
   return (
     <article
       className="
@@ -25,8 +29,21 @@ const AchievementCard = ({ achievement }: AchievementCardProps) => {
         </h3>
 
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          {achievement.platform}
+          {achievement.issuer}
+          {metaParts ? <span className="ml-2">• {metaParts}</span> : null}
         </p>
+
+        {achievement.link ? (
+          <a
+            href={achievement.link}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-block text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+            aria-label={`Open link for ${achievement.title}`}
+          >
+            View
+          </a>
+        ) : null}
       </div>
     </article>
   );
