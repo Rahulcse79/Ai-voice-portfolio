@@ -5,8 +5,6 @@ An interactive, modern developer portfolio built with **Next.js (App Router)**, 
 
 ## Photos / Screenshots
 
-Add your own screenshots here (recommended: place images under `public/assets/images/` and reference them below).
-
 ![Homepage](public/assets/images/HomePage.png)
 
 It includes a classic portfolio layout (hero, projects, experience, skills, education, achievements, contact) plus API routes for:
