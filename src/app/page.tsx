@@ -7,6 +7,7 @@ import AchievementsSection from "@/components/sections/AchievementsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import { TranscriptProvider } from "@/contexts/TranscriptContext";
 import { EventProvider } from "@/contexts/EventContext";
+import React, { Suspense } from "react";
 import App from "./App";
 
 export default function HomePage() {
@@ -19,11 +20,13 @@ export default function HomePage() {
       <EducationSection />
       <AchievementsSection />
       <ContactSection />
-      <TranscriptProvider>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </TranscriptProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <TranscriptProvider>
+          <EventProvider>
+            <App />
+          </EventProvider>
+        </TranscriptProvider>
+      </Suspense>
     </>
   );
 }

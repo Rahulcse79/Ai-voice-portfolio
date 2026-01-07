@@ -25,13 +25,13 @@ const sdkScenarioMap: Record<string, RealtimeAgent[]> = {
   ResumeAiScenario: ResumeAiAgent,
 };
 
-function getCompanyName(agentSetKey: string) {
+function getCompanyName() {
   return ResumeAiAgentOwnerName;
 }
 
 function App() {
   const searchParams = useSearchParams()!;
-  const { addTranscriptMessage, addTranscriptBreadcrumb } = useTranscript();
+  const { addTranscriptBreadcrumb } = useTranscript();
   const { logClientEvent, logServerEvent } = useEvent();
   const [selectedAgentName, setSelectedAgentName] = useState<string>("");
   const [selectedAgentConfigSet, setSelectedAgentConfigSet] = useState<
@@ -54,7 +54,7 @@ function App() {
     }
   }, [sdkAudioElement]);
 
-  const { connect, disconnect, sendEvent, mute } = useRealtimeSession({
+  const { connect, disconnect, mute } = useRealtimeSession({
     onConnectionChange: (s) => setSessionStatus(s as SessionStatus),
     onAgentHandoff: (agentName: string) => {
       handoffTriggeredRef.current = true;
@@ -141,7 +141,7 @@ function App() {
         }
 
         const moderationGuardrail = createModerationGuardrail(
-          getCompanyName(agentSetKey)
+          getCompanyName()
         );
 
         const languageGuardrail = createLanguageLockGuardrail();
@@ -175,12 +175,6 @@ function App() {
     } else {
       connectToRealtime();
     }
-  };
-
-  const handleCodecChange = (newCodec: string) => {
-    const url = new URL(window.location.toString());
-    url.searchParams.set("codec", newCodec);
-    window.location.replace(url.toString());
   };
 
   useEffect(() => {
