@@ -66,16 +66,18 @@ const HeroSection = () => {
             </MotionWrapper>
           </div>
 
-          <div className="relative hidden md:flex justify-end">
+          <div className="order-first flex justify-center md:order-none md:justify-end">
             <FadeIn delay={0.15}>
-              <Image
-                src="/assets/images/rahul.png"
-                alt="Rahul Singh"
-                width={360}
-                height={360}
-                priority
-                className="rounded-2xl object-cover shadow-lg"
-              />
+              <div className="relative h-48 w-48 sm:h-64 sm:w-64 md:h-[360px] md:w-[360px]">
+                <Image
+                  src="/assets/images/rahul.png"
+                  alt="Rahul Singh"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 12rem, (max-width: 768px) 16rem, 360px"
+                  className="rounded-2xl object-cover shadow-lg"
+                />
+              </div>
             </FadeIn>
           </div>
         </div>
