@@ -1,4 +1,3 @@
-
 # AI Voice Portfolio
 
 An interactive, modern developer portfolio built with **Next.js (App Router)**, **Tailwind CSS**, and an **AI assistant** powered by OpenAI.
@@ -13,7 +12,6 @@ It includes a classic portfolio layout (hero, projects, experience, skills, educ
 - **OpenAI Realtime session creation**
 - **Contact form** email delivery via SMTP (Nodemailer)
 
->
 > **Note:** This repo uses environment variables for OpenAI + SMTP. The server routes will return errors until you configure them.
 
 ---
@@ -59,9 +57,13 @@ npm install
 
 ### 2) Configure environment variables
 
-Create a local env file:
+Copy the sample env file and fill in your values:
 
-- `.env.local` (recommended for local dev)
+- `env.sample` contains safe placeholders
+- Create `.env.local` for local development (recommended)
+
+> Don’t commit real secrets (API keys, SMTP passwords). Keep them in `.env.local` or set them in your hosting provider.
+
 
 This project loads env from `.env.local` and `.env` on the server (see `src/lib/envSetup.ts`).
 
