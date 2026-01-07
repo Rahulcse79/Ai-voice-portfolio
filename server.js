@@ -1,10 +1,16 @@
-const https = require("https");
 const { parse } = require("url");
 const next = require("next");
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
 dotenv.config();
+
+// Render (and most PaaS) terminate TLS at the edge and expect your app to listen on
+// plain HTTP on process.env.PORT. A custom HTTPS server can cause routing issues.
+// We only use the HTTPS server in local/dev.
+const useHttps = process.env.USE_HTTPS === "true" && process.env.NODE_ENV !== "production";
+const http = useHttps ? null : require("http");
+const https = useHttps ? require("https") : null;
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = process.env.HOSTNAME || "0.0.0.0";
@@ -33,39 +39,47 @@ const assertFileReadable = (label, filePath) => {
 };
 
 let httpsOptions;
-if (tlsKeyPath || tlsCertPath) {
-  if (!tlsKeyPath || !tlsCertPath) {
-    throw new Error(
-      "[TLS] If using separate files, you must set BOTH TLS_KEY_PATH and TLS_CERT_PATH."
-    );
+if (useHttps) {
+  if (tlsKeyPath || tlsCertPath) {
+    if (!tlsKeyPath || !tlsCertPath) {
+      throw new Error(
+        "[TLS] If using separate files, you must set BOTH TLS_KEY_PATH and TLS_CERT_PATH."
+      );
+    }
+
+    const resolvedKey = resolveFromRepoRoot(tlsKeyPath);
+    const resolvedCert = resolveFromRepoRoot(tlsCertPath);
+    assertFileReadable("TLS key", resolvedKey);
+    assertFileReadable("TLS cert", resolvedCert);
+
+    httpsOptions = {
+      key: fs.readFileSync(resolvedKey),
+      cert: fs.readFileSync(resolvedCert),
+    };
+  } else {
+    const resolvedPem = resolveFromRepoRoot(tlsPemPath);
+    assertFileReadable("TLS PEM", resolvedPem);
+
+    httpsOptions = {
+      key: fs.readFileSync(resolvedPem),
+      cert: fs.readFileSync(resolvedPem),
+    };
   }
-
-  const resolvedKey = resolveFromRepoRoot(tlsKeyPath);
-  const resolvedCert = resolveFromRepoRoot(tlsCertPath);
-  assertFileReadable("TLS key", resolvedKey);
-  assertFileReadable("TLS cert", resolvedCert);
-
-  httpsOptions = {
-    key: fs.readFileSync(resolvedKey),
-    cert: fs.readFileSync(resolvedCert),
-  };
-} else {
-  const resolvedPem = resolveFromRepoRoot(tlsPemPath);
-  assertFileReadable("TLS PEM", resolvedPem);
-
-  httpsOptions = {
-    key: fs.readFileSync(resolvedPem),
-    cert: fs.readFileSync(resolvedPem),
-  };
 }
 
 app.prepare().then(() => {
-  https
-    .createServer(httpsOptions, (req, res) => {
-      const parsedUrl = parse(req.url, true);
-      handle(req, res, parsedUrl);
-    })
-    .listen(port, hostname, () => {
-      console.log(`> HTTPS Server running at https://${hostname}:${port}`);
-    });
+  const serverFactory = useHttps
+    ? https.createServer.bind(https, httpsOptions)
+    : http.createServer.bind(http);
+
+  serverFactory((req, res) => {
+    const parsedUrl = parse(req.url, true);
+    handle(req, res, parsedUrl);
+  }).listen(port, hostname, () => {
+    console.log(
+      useHttps
+        ? `> HTTPS Server running at https://${hostname}:${port}`
+        : `> HTTP Server running at http://${hostname}:${port}`
+    );
+  });
 });

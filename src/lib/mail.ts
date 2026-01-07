@@ -1,5 +1,15 @@
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
+import dns from "dns";
+
+// Prefer IPv4 first to avoid occasional IPv6 routing issues to SMTP on some hosts.
+// This affects DNS results ordering for the whole process.
+try {
+  (dns as any).setDefaultResultOrder?.("ipv4first");
+} catch {
+  // ignore
+}
 
 export type SendMailResult = {
   accepted?: string[];
@@ -34,13 +44,7 @@ function getMailConfigFromEnv() {
   if (!SMTP_PASS) throw new Error("SMTP_PASS is missing");
 
   const port = Number(SMTP_PORT);
-  const secure = SMTP_SECURE
-    ? SMTP_SECURE === "true"
-    : port === 465; // sensible default
-
-  // Default to strict TLS verification in production.
-  // If your SMTP provider uses a self-signed cert, you can set:
-  // SMTP_TLS_REJECT_UNAUTHORIZED=false
+  const secure = SMTP_SECURE ? SMTP_SECURE === "true" : port === 465;
   const tlsRejectUnauthorized =
     SMTP_TLS_REJECT_UNAUTHORIZED !== undefined
       ? SMTP_TLS_REJECT_UNAUTHORIZED === "true"
@@ -66,7 +70,7 @@ function getTransporter(): Transporter {
 
   const cfg = getMailConfigFromEnv();
 
-  cachedTransporter = nodemailer.createTransport({
+  const transportOptions: SMTPTransport.Options = {
     host: cfg.host,
     port: cfg.port,
     secure: cfg.secure,
@@ -77,7 +81,9 @@ function getTransporter(): Transporter {
     tls: {
       rejectUnauthorized: cfg.tlsRejectUnauthorized,
     },
-  });
+  };
+
+  cachedTransporter = nodemailer.createTransport(transportOptions);
 
   return cachedTransporter;
 }
@@ -88,20 +94,35 @@ export async function sendMail(
   const transporter = getTransporter();
   const cfg = getMailConfigFromEnv();
 
-  const info = await transporter.sendMail({
-    from: cfg.from,
-    to: params.to,
-    cc: params.cc,
-    bcc: params.bcc,
-    subject: params.subject,
-    text: params.text,
-    html: params.html,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: cfg.from,
+      to: params.to,
+      cc: params.cc,
+      bcc: params.bcc,
+      subject: params.subject,
+      text: params.text,
+      html: params.html,
+    });
 
-  return {
-    accepted: info.accepted,
-    rejected: info.rejected,
-    messageId: info.messageId,
-    response: info.response,
-  };
+    return {
+      accepted: info.accepted,
+      rejected: info.rejected,
+      messageId: info.messageId,
+      response: info.response,
+    };
+  } catch (err) {
+    cachedTransporter = null;
+
+    console.error("MAIL SEND ERROR:", {
+      code: (err as any)?.code,
+      command: (err as any)?.command,
+      host: cfg.host,
+      port: cfg.port,
+      secure: cfg.secure,
+      tlsRejectUnauthorized: cfg.tlsRejectUnauthorized,
+    });
+
+    throw err;
+  }
 }

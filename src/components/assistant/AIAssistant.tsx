@@ -109,7 +109,7 @@ const AIRobotRecorder = ({
               width={120}
               height={120}
               priority
-              className="drop-shadow-2xl w-14 h-14 sm:w-28 sm:h-28 md:w-36 md:h-36"
+              className="drop-shadow-2xl w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36"
             />
           </motion.div>
         </div>
