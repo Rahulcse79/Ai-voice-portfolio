@@ -74,7 +74,15 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("OTP SEND ERROR:", error);
+    console.error("OTP SEND ERROR:", {
+      message: (error as any)?.message,
+      code: (error as any)?.code,
+      command: (error as any)?.command,
+      smtpHost: process.env.SMTP_HOST,
+      smtpPort: process.env.SMTP_PORT,
+      smtpSecure: process.env.SMTP_SECURE,
+      nodeEnv: process.env.NODE_ENV,
+    });
     return NextResponse.json(
       { message: "Failed to send OTP" },
       { status: 500 }

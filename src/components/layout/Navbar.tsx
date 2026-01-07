@@ -33,6 +33,12 @@ const Navbar = () => {
               >
                 Articles
               </Link>
+              <Link
+                href="/photos"
+                className="font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                Photos
+              </Link>
             </div>
           </div>
 
