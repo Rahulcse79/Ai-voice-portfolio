@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Ticket from "@/models/ticket";
+import { sendMail } from "@/lib/mail";
+import { buildWhatsAppTicketEmailTemplate } from "@/lib/templates/ticketTemplate";
 
 function generateTicketId() {
   const now = new Date();
@@ -32,6 +34,36 @@ export async function POST(req: Request) {
     });
 
     await ticket.save();
+
+    // Notify admin via email (doesn't block ticket creation if email fails)
+    const adminTo = process.env.CONTACT_TO || process.env.SMTP_FROM;
+    if (!adminTo) {
+      console.warn(
+        "TICKET EMAIL WARNING: CONTACT_TO/SMTP_FROM missing; skipping admin notification"
+      );
+    } else {
+      try {
+        const { subject: mailSubject, text, html } =
+          buildWhatsAppTicketEmailTemplate({
+            ticketId: ticket.ticketId,
+            name: ticket.name,
+            product: ticket.product,
+            issue: ticket.issue,
+            createdAt: ticket.createdAt
+              ? new Date(ticket.createdAt).toISOString()
+              : new Date().toISOString(),
+          });
+
+        await sendMail({
+          to: adminTo,
+          subject: mailSubject,
+          text,
+          html,
+        });
+      } catch (mailErr) {
+        console.error("TICKET EMAIL ERROR:", mailErr);
+      }
+    }
 
     return NextResponse.json({
       success: true,
