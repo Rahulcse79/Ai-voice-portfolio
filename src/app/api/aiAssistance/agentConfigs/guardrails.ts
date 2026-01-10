@@ -4,7 +4,7 @@ import { GuardrailOutputZod, GuardrailOutput } from "@/app/types";
 
 export async function runGuardrailClassifier(
   message: string,
-  assistantName = "Resume AI Assistant"
+  assistantName = "Store AI Assistant"
 ): Promise<GuardrailOutput> {
   const messages = [
     {

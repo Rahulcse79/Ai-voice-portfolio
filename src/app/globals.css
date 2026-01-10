@@ -54,6 +54,25 @@ a {
   background-color: rgba(148, 163, 184, 0.25);
 }
 
+.whatsapp-drawer-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.whatsapp-drawer-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.whatsapp-drawer-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(16, 185, 129, 0.35);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark .whatsapp-drawer-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(16, 185, 129, 0.25);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

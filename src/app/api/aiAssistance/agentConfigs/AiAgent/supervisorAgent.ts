@@ -1,14 +1,14 @@
 import { RealtimeItem, tool } from "@openai/agents/realtime";
 import { achievements } from "@/data/achievements";
-import { education } from "@/data/education";
-import { experiences } from "@/data/experience";
-import { skills } from "@/data/skills";
-import { projects } from "@/data/projects";
-import { profile } from "@/data/profile";
+import { storeFeatures } from "@/data/storeFeature";
+import { articles } from "@/data/articles";
+import { companyProfile } from "@/data/companyProfile";
+import { products } from "@/data/products";
+import { reviews } from "@/data/reviews";
 
 export const supervisorAgentInstructions = `
-You are a personal resume AI assistant for Rahul Singh.
-Your responses will be read directly to the user.
+You are a virtual sales and support assistant for the company "${companyProfile.name}".
+Your responses will be read directly to customers visiting the website.
 
 ================ LANGUAGE RULES =================
 - Detect the user's language from their most recent clear message.
@@ -19,25 +19,28 @@ Your responses will be read directly to the user.
 - Translate ONLY if the user explicitly asks for translation.
 
 ================ ROLE =================
-- Speak only about Rahul Singh’s resume, experience, projects, skills, and background.
-- Answer questions as if you are explaining Rahul’s profile to a recruiter or interviewer.
-- Be accurate and factual based on the provided data.
+- Help customers understand the company and its products.
+- Answer questions about refrigerators, washing machines, and TVs.
+- Explain features, pricing, warranty, delivery, and offers.
+- Recommend products based on customer needs and budget.
+- Act like a helpful store representative.
 
 ================ RESPONSE STYLE =================
 - Professional
+- Friendly
 - Clear
 - Confident
 - Concise
 - Voice-friendly (no bullet lists)
 - Natural spoken tone
 
-================ AVAILABLE RESUME DATA =================
+================ AVAILABLE STORE DATA =================
 You MUST rely only on this data:
-- profile
-- experiences
-- projects
-- skills
-- education
+- companyProfile
+- products
+- storeFeatures
+- reviews
+- articles
 - achievements
 
 ================ OUTPUT RULE =================
@@ -45,10 +48,10 @@ You MUST rely only on this data:
 - If clarification is needed, ask one short follow-up question.
 `;
 
-export const getNextResponseFromResumeAiAgent = tool({
-  name: "getNextResponseFromResumeAiAgent",
+export const getNextResponseFromStoreAiAgent = tool({
+  name: "getNextResponseFromStoreAiAgent",
   description:
-    "Generates the next resume-focused response using Rahul Singh's resume data.",
+    "Generates the next customer-facing response using the store’s website data.",
   parameters: {
     type: "object",
     properties: {
@@ -84,22 +87,22 @@ export const getNextResponseFromResumeAiAgent = tool({
           type: "message",
           role: "user",
           content: `
-==== PROFILE ====
-${JSON.stringify(profile, null, 2)}
+==== COMPANY PROFILE ====
+${JSON.stringify(companyProfile, null, 2)}
 
-==== EXPERIENCE ====
-${JSON.stringify(experiences, null, 2)}
+==== STORE FEATURES ====
+${JSON.stringify(storeFeatures, null, 2)}
 
-==== PROJECTS ====
-${JSON.stringify(projects, null, 2)}
+==== PRODUCTS ====
+${JSON.stringify(products, null, 2)}
 
-==== SKILLS ====
-${JSON.stringify(skills, null, 2)}
+==== CUSTOMER REVIEWS ====
+${JSON.stringify(reviews, null, 2)}
 
-==== EDUCATION ====
-${JSON.stringify(education, null, 2)}
+==== BUYING GUIDES / ARTICLES ====
+${JSON.stringify(articles, null, 2)}
 
-==== ACHIEVEMENTS ====
+==== ACHIEVEMENTS & TRUST BADGES ====
 ${JSON.stringify(achievements, null, 2)}
 
 ==== CONVERSATION HISTORY ====

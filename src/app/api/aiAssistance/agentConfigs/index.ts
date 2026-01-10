@@ -1,8 +1,8 @@
-import { ResumeAiAgent } from "./ResumeAiAgent";
+import { StoreAiAgent } from "./AiAgent";
 import { RealtimeAgent } from "@openai/agents/realtime";
 
 export const allAgentSets: Record<string, RealtimeAgent[]> = {
-  ResumeAiScenario: ResumeAiAgent,
+  StoreAiScenario: StoreAiAgent,
 };
 
-export const defaultAgentSetKey = "ResumeAiScenario";
+export const defaultAgentSetKey = "StoreAiScenario";

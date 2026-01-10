@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import MotionWrapper from "@/components/animations/MotionWrapper";
 import FadeIn from "@/components/animations/FadeIn";
 import SocialLinks from "@/components/ui/SocialLinks";
-import { profile } from "@/data/profile";
+import { companyProfile } from "@/data/companyProfile";
 
 const HeroSection = () => {
   return (
@@ -17,43 +17,58 @@ const HeroSection = () => {
                 <h1 className="mt-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
                   Hi, I’m{" "}
                   <span className="text-blue-600 dark:text-blue-400">
-                    {profile.name}
+                    {companyProfile.name}
                   </span>
                 </h1>
               </FadeIn>
 
               <FadeIn delay={0.1}>
                 <p className="mt-4 text-xl font-semibold text-gray-700 dark:text-gray-300">
-                  {profile.role}
+                  {companyProfile.role}
+                </p>
+                <p className="mt-2 text-base font-medium text-gray-700 dark:text-gray-300">
+                  {companyProfile.headline}
                 </p>
                 <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                  {profile.location}
+                  {companyProfile.location}
                 </p>
               </FadeIn>
 
               <FadeIn delay={0.15}>
                 <p className="mt-6 max-w-2xl text-gray-600 dark:text-gray-400">
-                  {profile.summary}
+                  {companyProfile.summary}
                 </p>
               </FadeIn>
 
               <FadeIn delay={0.2}>
                 <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <Button as="a" href="#projects">
-                    View Projects
+                  <Button as="a" href="#products">
+                    Browse Products
                   </Button>
+
+                  {companyProfile.catalogUrl ? (
+                    <Button
+                      as="a"
+                      href={companyProfile.catalogUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="outline"
+                    >
+                      Download Catalog
+                    </Button>
+                  ) : null}
 
                   <Button
                     as="a"
-                    href="/resume/Rahul_singh_resume.pdf"
+                    href={
+                      companyProfile.socialLinks.find(
+                        (l) => l.label === "WhatsApp"
+                      )?.url || "#contact"
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Resume.pdf
-                  </Button>
-
-                  <Button as="a" href="#contact" variant="outline">
-                    Contact Me
+                    WhatsApp Us
                   </Button>
                 </div>
               </FadeIn>
@@ -70,8 +85,8 @@ const HeroSection = () => {
             <FadeIn delay={0.15}>
               <div className="relative h-48 w-48 sm:h-64 sm:w-64 md:h-[360px] md:w-[360px]">
                 <Image
-                  src="/assets/images/rahul.png"
-                  alt="Rahul Singh"
+                  src="/assets/images/photo.jpeg"
+                  alt={companyProfile.name}
                   fill
                   priority
                   sizes="(max-width: 640px) 12rem, (max-width: 768px) 16rem, 360px"

@@ -21,6 +21,7 @@
     "dotenv": "^16.4.7",
     "framer-motion": "^12.23.26",
     "lottie-react": "^2.4.1",
+    "mongoose": "^9.1.2",
     "next": "^15.5.9",
     "nodemailer": "^7.0.12",
     "openai": "4.104.0",

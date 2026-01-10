@@ -9,39 +9,31 @@ export interface Article {
 
 export const articles: Article[] = [
   {
-    id: "ai-voice-agent",
-    title: "Building a Real-Time AI Voice Agent with Human Escalation",
+    id: "smart-refrigerator-buying-guide",
+    title: "Smart Refrigerator Buying Guide: Features That Actually Matter",
     summary:
-      "How I designed and implemented a real-time AI/ML-powered voice agent that seamlessly escalates to human operators, integrating OpenAI APIs, WebRTC, and live sensor data for enterprise telecom.",
-    date: "2025-11-10",
-    formattedDate: "Nov 10, 2025",
-    tags: ["AI", "Voice", "OpenAI", "WebRTC", "Real-Time"],
+      "A practical breakdown of modern refrigerator features—convertible modes, inverter compressors, energy ratings, and smart connectivity—so you can pick the right fridge for your kitchen and power bill.",
+    date: "2025-05-10",
+    formattedDate: "May 10, 2025",
+    tags: ["Home Appliances", "Refrigerator", "Energy Efficiency"],
   },
   {
-    id: "geofencing-tracker",
-    title: "End-to-End Geofencing and Live Tracking with IoT Hardware",
+    id: "choosing-the-right-tv",
+    title: "Choosing the Right TV in 2025: OLED vs QLED vs LED",
     summary:
-      "A deep dive into building a scalable geofencing platform using React, Node.js, and Arduino, with real-time GPS/SIM integration and OTP-based verification for secure, reliable tracking.",
-    date: "2025-09-22",
-    formattedDate: "Sep 22, 2025",
-    tags: ["IoT", "Geofencing", "GPS", "Arduino", "Node.js"],
+      "Explains resolution, refresh rate, display technologies, and HDR formats in simple terms, helping you choose the best TV for movies, sports, and gaming without getting lost in marketing jargon.",
+    date: "2025-04-18",
+    formattedDate: "Apr 18, 2025",
+    tags: ["TV", "Home Entertainment", "Buying Guide"],
   },
   {
-    id: "scalable-web-architecture",
-    title: "Designing Scalable Web Architectures for Telecom Solutions",
+    id: "washing-machine-guide",
+    title:
+      "Front Load vs Top Load Washing Machines: Which One Is Best for You?",
     summary:
-      "Lessons learned from architecting and optimizing high-performance web applications in the telecom industry, focusing on modularity, microservices, and real-time communication workflows.",
-    date: "2025-07-15",
-    formattedDate: "Jul 15, 2025",
-    tags: ["Web", "Architecture", "Telecom", "Microservices"],
-  },
-  {
-    id: "ai-integration-enterprise",
-    title: "Integrating AI/ML into Enterprise Workflows: A Practical Guide",
-    summary:
-      "A practical guide to embedding AI/ML-driven features into existing enterprise systems, with a focus on automation, reliability, and measurable business impact.",
-    date: "2025-05-30",
-    formattedDate: "May 30, 2025",
-    tags: ["AI", "ML", "Enterprise", "Automation"],
+      "Compares front-load and top-load washing machines on water usage, fabric care, wash programs, maintenance, and budget so you can confidently choose what fits your family and laundry habits.",
+    date: "2025-03-05",
+    formattedDate: "Mar 5, 2025",
+    tags: ["Washing Machine", "Laundry", "Home Appliances"],
   },
 ];

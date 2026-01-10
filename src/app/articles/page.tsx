@@ -33,7 +33,7 @@ const ArticlesSection = () => {
             </h2>
 
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {new Date(articles[current].date).toLocaleDateString()}
+              {articles[current].formattedDate}
             </span>
           </div>
 

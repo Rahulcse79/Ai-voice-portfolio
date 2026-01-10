@@ -7,9 +7,9 @@ type PhotoItem = {
 };
 
 const PHOTOS: PhotoItem[] = [
-  { name: "GitHub", src: "/assets/images/photos/github.png" },
-  { name: "LeetCode", src: "/assets/images/photos/leetcode.png" },
-  { name: "LinkedIn", src: "/assets/images/photos/linkedin.png" },
+  { name: "Refrigerator", src: "/assets/images/photos/refrigerator.jpeg" },
+  { name: "TV", src: "/assets/images/photos/tv.jpeg" },
+  { name: "Washing machine", src: "/assets/images/photos/washing_machine.jpeg" },
 ];
 
 function toAltText(photo: PhotoItem) {

@@ -1,23 +1,23 @@
 import Container from "@/components/layout/Container";
 import SectionTitle from "@/components/ui/SectionTitle";
-import EducationCard from "@/components/cards/EducationCard";
+import FeatureCard from "@/components/cards/FeatureCard";
 import StaggerContainer from "@/components/animations/StaggerContainer";
 import MotionWrapper from "@/components/animations/MotionWrapper";
-import { education } from "@/data/education";
+import { storeFeatures } from "@/data/storeFeature";
 
-const EducationSection = () => {
+const FeatureSection = () => {
   return (
-    <section id="education" className="py-20">
+    <section id="features" className="py-20">
       <Container>
         <SectionTitle
-          title="Education"
-          subtitle="Academic background and formal qualifications"
+          title="Features"
+          subtitle="Key features and benefits of our store"
         />
 
         <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {education.map((item) => (
+          {storeFeatures.map((item) => (
             <MotionWrapper key={item.id}>
-              <EducationCard education={item} />
+              <FeatureCard feature={item} />
             </MotionWrapper>
           ))}
         </StaggerContainer>
@@ -26,4 +26,4 @@ const EducationSection = () => {
   );
 };
 
-export default EducationSection;
+export default FeatureSection;
