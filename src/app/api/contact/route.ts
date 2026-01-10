@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>New Portfolio Contact</h2>
+        <h2>New Report Contact</h2>
         <p><strong>Name:</strong> ${safe(name)}</p>
         <p><strong>Email:</strong> ${safe(email)}</p>
         <p><strong>Mobile:</strong> ${safe(mobile)}</p>
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     `;
 
     const text = `
-New Portfolio Contact
+New Report Contact
 
 Name: ${name}
 Email: ${email}
@@ -84,7 +84,7 @@ ${message}
     await sendMail({
       to: adminTo,
       cc: email,
-      subject: `Portfolio Contact: ${subject}`,
+      subject: `Report Contact: ${subject}`,
       text,
       html,
     });
