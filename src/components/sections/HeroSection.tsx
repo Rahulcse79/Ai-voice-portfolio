@@ -54,7 +54,7 @@ const HeroSection = () => {
                       rel="noopener noreferrer"
                       variant="outline"
                     >
-                      Download Catalog
+                      Download Report
                     </Button>
                   ) : null}
 
