@@ -1,14 +1,24 @@
+"use client";
+
+import React from "react";
 import Image from "next/image";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
 import MotionWrapper from "@/components/animations/MotionWrapper";
 import FadeIn from "@/components/animations/FadeIn";
 import SocialLinks from "@/components/ui/SocialLinks";
+import DownloadReportModal from "@/components/ui/DownloadReportModal";
 import { companyProfile } from "@/data/companyProfile";
 
 const HeroSection = () => {
+  const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+
   return (
     <section id="hero" className="py-24 sm:py-28">
+      <DownloadReportModal
+        open={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+      />
       <Container as="main">
         <div className="grid items-start gap-12 md:grid-cols-2">
           <div>
@@ -46,17 +56,12 @@ const HeroSection = () => {
                     Browse Products
                   </Button>
 
-                  {companyProfile.catalogUrl ? (
-                    <Button
-                      as="a"
-                      href={companyProfile.catalogUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="outline"
-                    >
-                      Download Report
-                    </Button>
-                  ) : null}
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsReportModalOpen(true)}
+                  >
+                    Download Report
+                  </Button>
 
                   <Button
                     as="a"
