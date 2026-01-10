@@ -60,7 +60,6 @@ const Navbar = () => {
         </nav>
       </Container>
 
-      {/* Render inside header, but drawer itself uses fixed viewport positioning */}
       <WhatsAppDrawer open={waOpen} onClose={() => setWaOpen(false)} />
     </header>
   );

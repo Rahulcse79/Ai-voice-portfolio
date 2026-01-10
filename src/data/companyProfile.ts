@@ -25,7 +25,7 @@ export const companyProfile: CompanyProfile = {
   summary:
     "SmartHome Appliances is a trusted retailer of premium home appliances, offering a wide range of refrigerators, washing machines, and smart TVs from leading brands. We focus on delivering genuine products, competitive pricing, fast doorstep delivery, and reliable after-sales support to ensure complete customer satisfaction.",
 
-  catalogUrl: "/catalog/home-appliances.pdf",
+  catalogUrl: "/catalog/home-appliances.tickets.json",
 
   socialLinks: [
     {
