@@ -18,7 +18,7 @@ const textTemplates = {
   VERIFY_EMAIL: `
 Hello {name},
 
-Thank you for contacting me through my portfolio.
+Thank you for contacting me through my website.
 
 To verify your email address, please use the following OTP:
 
@@ -30,8 +30,7 @@ Please do not share this code with anyone.
 If you did not request this verification, you can safely ignore this email.
 
 Best regards,
-Rahul Singh
-Software Engineer
+website team
 `,
 };
 
@@ -50,7 +49,7 @@ const htmlTemplates = {
       <p style="color:#374151;">Hello <strong>{name}</strong>,</p>
 
       <p style="color:#374151;">
-        Thank you for contacting me through my portfolio.
+        Thank you for contacting me through my website.
         To verify that this email address is valid, please use the OTP below:
       </p>
 
@@ -82,8 +81,7 @@ const htmlTemplates = {
 
       <p style="color:#374151;">
         Best regards,<br />
-        <strong>Rahul Singh</strong><br />
-        Software Engineer
+        <strong>website team</strong><br />
       </p>
     </div>
   </body>
