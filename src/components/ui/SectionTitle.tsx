@@ -1,6 +1,7 @@
 interface SectionTitleProps {
   title: string;
   subtitle?: string;
+  eyebrow?: string;
   align?: "left" | "center";
   className?: string;
 }
@@ -8,6 +9,7 @@ interface SectionTitleProps {
 const SectionTitle = ({
   title,
   subtitle,
+  eyebrow,
   align = "left",
   className,
 }: SectionTitleProps) => {
@@ -15,15 +17,20 @@ const SectionTitle = ({
     align === "center" ? "text-center items-center" : "text-left";
 
   return (
-    <header
-      className={`mb-10 ${alignment} text-black dark:text-white ${className ?? ""}`}
-    >
-      <h2 className="text-3xl font-bold tracking-tight">
+    <header className={`mb-12 ${alignment} ${className ?? ""}`}>
+      {eyebrow && (
+        <p className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-500">
+          {eyebrow}
+        </p>
+      )}
+      <h2 className="font-serif text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
         {title}
       </h2>
 
       {subtitle && (
-        <p className="mt-2 max-w-2xl">{subtitle}</p>
+        <p className="mt-4 max-w-2xl text-base text-[color:var(--muted)] sm:text-lg">
+          {subtitle}
+        </p>
       )}
     </header>
   );

@@ -28,21 +28,22 @@ const Button = <C extends React.ElementType = "button">({
   const Component = as || "button";
 
   const baseStyles =
-    "inline-flex items-center justify-center rounded-lg font-medium transition-colors " +
-    "focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+    "inline-flex items-center justify-center gap-1.5 rounded-full font-medium transition-all " +
+    "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none";
 
   const sizes: Record<Size, string> = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-5 py-2 text-sm",
-    lg: "px-6 py-3 text-base",
+    sm: "px-4 py-1.5 text-sm",
+    md: "px-5 py-2.5 text-sm",
+    lg: "px-7 py-3 text-base",
   };
 
   const variants: Record<Variant, string> = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    primary:
+      "bg-brand-500 text-white hover:bg-brand-600 focus:ring-brand-400 shadow-brand-soft hover:shadow-brand-glow",
     secondary:
-      "bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200",
+      "bg-ink-800 text-white hover:bg-ink-700 focus:ring-ink-600 border border-white/10 dark:bg-ink-800",
     outline:
-      "border border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-gray-400 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800",
+      "border border-white/15 text-foreground hover:border-brand-400 hover:text-brand-400 focus:ring-brand-400 bg-transparent",
   };
 
   return (

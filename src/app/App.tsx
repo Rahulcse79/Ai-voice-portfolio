@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SessionStatus } from "@/app/types";
-import type { RealtimeAgent } from "@openai/agents/realtime";
 import { useTranscript } from "@/contexts/TranscriptContext";
 import { useEvent } from "@/contexts/EventContext";
 import { useRealtimeSession } from "@/hooks/useRealtimeSession";
@@ -10,24 +9,8 @@ import {
   createLanguageLockGuardrail,
   createModerationGuardrail,
 } from "@/app/api/aiAssistance/agentConfigs/guardrails";
-import {
-  allAgentSets,
-  defaultAgentSetKey,
-} from "@/app/api/aiAssistance/agentConfigs";
-import {
-  ResumeAiAgent,
-  ResumeAiAgentOwnerName,
-} from "@/app/api/aiAssistance/agentConfigs/ResumeAiAgent";
 import { useHandleSessionHistory } from "@/hooks/useHandleSessionHistory";
 import AIAssistant from "@/components/assistant/AIAssistant";
-
-const sdkScenarioMap: Record<string, RealtimeAgent[]> = {
-  ResumeAiScenario: ResumeAiAgent,
-};
-
-function getCompanyName() {
-  return ResumeAiAgentOwnerName;
-}
 
 function App() {
   const searchParams = useSearchParams()!;
@@ -35,7 +18,7 @@ function App() {
   const { logClientEvent, logServerEvent } = useEvent();
   const [selectedAgentName, setSelectedAgentName] = useState<string>("");
   const [selectedAgentConfigSet, setSelectedAgentConfigSet] = useState<
-    RealtimeAgent[] | null
+    any[] | null
   >(null);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const handoffTriggeredRef = useRef(false);
@@ -75,20 +58,25 @@ function App() {
   useHandleSessionHistory();
 
   useEffect(() => {
-    let finalAgentConfig = searchParams.get("agentConfig");
-    if (!finalAgentConfig || !allAgentSets[finalAgentConfig]) {
-      finalAgentConfig = defaultAgentSetKey;
-      const url = new URL(window.location.toString());
-      url.searchParams.set("agentConfig", finalAgentConfig);
-      window.location.replace(url.toString());
-      return;
-    }
+    (async () => {
+      const { allAgentSets, defaultAgentSetKey } = await import(
+        "@/app/api/aiAssistance/agentConfigs"
+      );
+      let finalAgentConfig = searchParams.get("agentConfig");
+      if (!finalAgentConfig || !allAgentSets[finalAgentConfig]) {
+        finalAgentConfig = defaultAgentSetKey;
+        const url = new URL(window.location.toString());
+        url.searchParams.set("agentConfig", finalAgentConfig);
+        window.location.replace(url.toString());
+        return;
+      }
 
-    const agents = allAgentSets[finalAgentConfig];
-    const agentKeyToUse = agents[0]?.name || "";
+      const agents = allAgentSets[finalAgentConfig];
+      const agentKeyToUse = agents[0]?.name || "";
 
-    setSelectedAgentName(agentKeyToUse);
-    setSelectedAgentConfigSet(agents);
+      setSelectedAgentName(agentKeyToUse);
+      setSelectedAgentConfigSet(agents);
+    })();
   }, [searchParams]);
 
   useEffect(() => {
@@ -123,7 +111,14 @@ function App() {
 
   const connectToRealtime = async () => {
     const agentSetKey = searchParams.get("agentConfig") || "default";
-    if (sdkScenarioMap[agentSetKey]) {
+    const { allAgentSets } = await import(
+      "@/app/api/aiAssistance/agentConfigs"
+    );
+    const { ResumeAiAgentOwnerName } = await import(
+      "@/app/api/aiAssistance/agentConfigs/ResumeAiAgent"
+    );
+
+    if (allAgentSets[agentSetKey]) {
       if (sessionStatus !== "DISCONNECTED") return;
       setSessionStatus("CONNECTING");
 
@@ -131,7 +126,7 @@ function App() {
         const EPHEMERAL_KEY = await fetchEphemeralKey();
         if (!EPHEMERAL_KEY) return;
 
-        const reorderedAgents = [...sdkScenarioMap[agentSetKey]];
+        const reorderedAgents = [...allAgentSets[agentSetKey]];
         const idx = reorderedAgents.findIndex(
           (a) => a.name === selectedAgentName
         );
@@ -141,7 +136,7 @@ function App() {
         }
 
         const moderationGuardrail = createModerationGuardrail(
-          getCompanyName()
+          ResumeAiAgentOwnerName
         );
 
         const languageGuardrail = createLanguageLockGuardrail();

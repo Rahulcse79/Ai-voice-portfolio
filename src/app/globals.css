@@ -5,11 +5,23 @@
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
+  --muted: #64748b;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --border: rgba(15, 23, 42, 0.08);
+  --brand: #ec4899;
+  --brand-soft: rgba(236, 72, 153, 0.18);
 }
 
 .dark {
-  --background: #020617;
-  --foreground: #e5e7eb;
+  --background: #0a0a0f;
+  --foreground: #e8e8ee;
+  --muted: #9ca3af;
+  --surface: #13131c;
+  --surface-2: #181822;
+  --border: rgba(255, 255, 255, 0.08);
+  --brand: #ec4899;
+  --brand-soft: rgba(236, 72, 153, 0.22);
 }
 
 html,
@@ -17,12 +29,17 @@ body {
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -34,7 +51,8 @@ a {
 }
 
 ::selection {
-  background-color: rgba(37, 99, 235, 0.25);
+  background-color: var(--brand-soft);
+  color: var(--foreground);
 }
 
 ::-webkit-scrollbar {
@@ -46,12 +64,106 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(148, 163, 184, 0.4);
+  background-color: rgba(148, 163, 184, 0.25);
   border-radius: 9999px;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background-color: rgba(148, 163, 184, 0.25);
+@layer utilities {
+  /* Soft pink/purple glow behind hero */
+  .bg-aurora {
+    background-color: var(--background);
+    background-image:
+      radial-gradient(50rem 38rem at 88% -10%, rgba(236, 72, 153, 0.18), transparent 60%),
+      radial-gradient(45rem 35rem at -10% 110%, rgba(168, 85, 247, 0.14), transparent 55%),
+      radial-gradient(30rem 25rem at 50% 70%, rgba(236, 72, 153, 0.08), transparent 65%);
+  }
+  .dark .bg-aurora {
+    background-image:
+      radial-gradient(55rem 40rem at 90% -10%, rgba(236, 72, 153, 0.28), transparent 60%),
+      radial-gradient(45rem 35rem at -10% 110%, rgba(168, 85, 247, 0.22), transparent 55%),
+      radial-gradient(30rem 25rem at 50% 70%, rgba(236, 72, 153, 0.10), transparent 65%);
+  }
+
+  /* Pink gradient block used as the top of project/course cards */
+  .bg-brand-gradient {
+    background-image: linear-gradient(135deg, #f472b6 0%, #ec4899 45%, #be185d 100%);
+  }
+
+  /* Animated brand gradient text (used for last name in hero) */
+  .text-brand-gradient {
+    background: linear-gradient(90deg, #f472b6 0%, #ec4899 50%, #be185d 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-shift 10s ease-in-out infinite;
+  }
+
+  /* Subtle dotted/grid overlay */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+  .dark .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+  }
+
+  /* Premium dark surface card */
+  .surface-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .surface-card-2 {
+    background-color: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+
+  /* Pill tag */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.85rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    background-color: transparent;
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+  }
+  .pill:hover {
+    color: var(--foreground);
+    border-color: var(--brand);
+  }
+  .pill-brand {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+
+  /* Serif-italic nav link styling like reference */
+  .nav-link {
+    font-family: var(--font-serif), serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .nav-link:hover,
+  .nav-link[data-active="true"] {
+    color: var(--foreground);
+  }
+
+  .balance {
+    text-wrap: balance;
+  }
+}
+
+/* Headings get serif treatment */
+h1, h2, h3, .font-serif-display {
+  font-family: var(--font-serif), Georgia, serif;
 }
 
 @media (prefers-reduced-motion: reduce) {

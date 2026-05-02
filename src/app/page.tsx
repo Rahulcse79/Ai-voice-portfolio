@@ -1,5 +1,6 @@
 import HeroSection from "@/components/sections/HeroSection";
 import ProjectsSection from "@/components/sections/ProjectsSection";
+import OpenSourceSection from "@/components/sections/OpenSourceSection";
 import ExperienceSection from "@/components/sections/ExperienceSection";
 import SkillsSection from "@/components/sections/SkillsSection";
 import EducationSection from "@/components/sections/EducationSection";
@@ -8,13 +9,14 @@ import ContactSection from "@/components/sections/ContactSection";
 import { TranscriptProvider } from "@/contexts/TranscriptContext";
 import { EventProvider } from "@/contexts/EventContext";
 import React, { Suspense } from "react";
-import App from "./App";
+import AppClient from "@/components/assistant/AppClient";
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
       <ProjectsSection />
+      <OpenSourceSection />
       <ExperienceSection />
       <SkillsSection />
       <EducationSection />
@@ -23,7 +25,7 @@ export default function HomePage() {
       <Suspense fallback={<div>Loading...</div>}>
         <TranscriptProvider>
           <EventProvider>
-            <App />
+          <AppClient />
           </EventProvider>
         </TranscriptProvider>
       </Suspense>
