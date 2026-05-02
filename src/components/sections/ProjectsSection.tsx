@@ -10,11 +10,12 @@ const ProjectsSection = () => {
     <section id="projects" className="py-20">
       <Container>
         <SectionTitle
-          title="Projects"
-          subtitle="Selected work showcasing real-world problem solving and engineering depth"
+          eyebrow="Selected Work"
+          title="Projects shipping in production"
+          subtitle="Real systems serving real users — synthesised from my GitHub, with quantifiable engineering impact."
         />
 
-        <StaggerContainer className="grid gap-6 md:grid-cols-2">
+        <StaggerContainer className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
             <MotionWrapper key={project.id}>
               <ProjectCard project={project} />

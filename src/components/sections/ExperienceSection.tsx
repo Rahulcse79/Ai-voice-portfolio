@@ -7,19 +7,25 @@ import { experiences } from "@/data/experience";
 
 const ExperienceSection = () => {
   return (
-    <section id="experience" className="py-20">
+    <section id="experience" className="py-24">
       <Container>
         <SectionTitle
+          eyebrow="Career"
           title="Experience"
-          subtitle="Professional experience and real-world problem solving"
+          subtitle="Production engineering with measurable business outcomes."
         />
 
-        <StaggerContainer className="grid gap-6">
-          {experiences.map((experience) => (
-            <MotionWrapper key={experience.id}>
-              <ExperienceCard experience={experience} />
-            </MotionWrapper>
-          ))}
+        <StaggerContainer>
+          <ol className="relative">
+            {experiences.map((experience, idx) => (
+              <MotionWrapper key={experience.id}>
+                <ExperienceCard
+                  experience={experience}
+                  isLast={idx === experiences.length - 1}
+                />
+              </MotionWrapper>
+            ))}
+          </ol>
         </StaggerContainer>
       </Container>
     </section>

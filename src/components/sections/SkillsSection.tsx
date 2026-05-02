@@ -10,8 +10,9 @@ const SkillsSection = () => {
     <section id="skills" className="py-20">
       <Container>
         <SectionTitle
+          eyebrow="Toolkit"
           title="Skills"
-          subtitle="Technologies and tools I work with across the stack"
+          subtitle="Languages, frameworks, and infrastructure I work with across the stack."
         />
 
         <StaggerContainer className="grid gap-6 sm:grid-cols-2">
